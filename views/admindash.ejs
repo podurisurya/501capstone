@@ -1,0 +1,198 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Scheduling Administrator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color:rgb(6, 6, 64);
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            display: flex;
+            justify-content: space-between; /* Align buttons to the right */
+            align-items: center;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-around;
+            padding: 2em;
+        }
+
+        section {
+            width: 45%;
+            background-color: #eee;
+            padding: 1em;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        } 
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1em;
+        }
+
+        label {
+            margin-bottom: 0.5em;
+        }
+
+        input, button {
+            padding: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.5em;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 style="text-align: center;">Sports Scheduling Administrator</h1>
+        <div>
+            <button onclick="location.href='/reports'" type="button">Reports</button>
+            <button onclick="location.href='/changepassword'" type="button">Change Password</button>
+            <button onclick="location.href='/login'" type="button">Logout</button>
+
+        </div>
+    </header>
+    <main>
+        <section id="manage-sports">
+            <h2>Manage Sports</h2>
+            <form id="sport-form">
+                <label for="sport-name">Sport Name:</label>
+                <input type="text" id="sport-name" name="sport-name" required>
+                <button type="submit">Add Sport</button>
+            </form>
+            <ul id="sports-list"></ul>
+        </section>
+        <section id="manage-sessions">
+            <h2>Manage Sessions</h2>
+            <form id="session-form" method="post" action="/admindash">
+                <label for="sport-id">Sport:</label>
+                <select id="sport-id" name="sport-id">
+                    <% sports.forEach(sport => { %>
+                        <option value="<%= sport.id %>"><%= sport.name %></option>
+                    <% }); %>
+                </select>
+               
+                <label for="team1">Team 1:</label>
+                <input type="text" id="team1" name="team1" required>
+                <label for="team2">Team 2:</label>
+                <input type="text" id="team2" name="team2" required>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                <label for="venue">Venue:</label>
+                <input type="text" id="venue" name="venue" required>
+                <button type="submit">Add Session</button>
+            </form>
+            <table id="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>Sport</th>
+                        <th>Teams</th>
+                        <th>Date</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sessions will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sportForm = document.getElementById('sport-form');
+            const sportsList = document.getElementById('sports-list');
+            const sessionForm = document.getElementById('session-form');
+            const sessionsTableBody = document.getElementById('sessions-table').querySelector('tbody');
+
+            // Handle adding new sports
+            sportForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const sportNameInput = document.getElementById('sport-name');
+                const sportName = sportNameInput.value.trim();
+
+                if (sportName) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = sportName;
+                    sportsList.appendChild(listItem);
+                    sportNameInput.value = '';
+                }
+            });
+
+            // Handle adding new session
+            sessionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const sportId = document.getElementById('sport-id').value;
+                const team1 = document.getElementById('team1').value.trim();
+                const team2 = document.getElementById('team2').value.trim();
+                const date = document.getElementById('date').value;
+                const venue = document.getElementById('venue').value.trim();
+
+                // Dummy session ID for demonstration
+                const sessionId = Math.floor(Math.random() * 1000) + 1;
+
+                if (team1 && team2 && date && venue) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sessionId}</td>
+                        <td>${getSportNameById(sportId)}</td>
+                        <td>${team1} vs ${team2}</td>
+                        <td>${date}</td>
+                        <td>${venue}</td>
+                    `;
+                    sessionsTableBody.appendChild(row);
+
+                    // Clear form inputs after adding session
+                    document.getElementById('team1').value = '';
+                    document.getElementById('team2').value = '';
+                    document.getElementById('date').value = '';
+                    document.getElementById('venue').value = '';
+                }
+            });
+
+            // Function to retrieve sport name by ID (replace with actual data logic)
+            function getSportNameById(id) {
+                // Replace this with actual data retrieval logic
+                switch (id) {
+                    case '1':
+                        return 'Football';
+                    case '2':
+                        return 'Basketball';
+                    default:
+                        return 'Unknown';
+                }
+            }
+
+        });
+    </script>
+</body>
+</html> 

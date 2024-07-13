@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Session Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color:rgb(6, 6, 64);
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            display: flex;
+            justify-content: space-between; /* Align buttons to the right */
+            align-items: center;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-around;
+            padding: 2em;
+        }
+
+        section {
+            width: 45%;
+            background-color: #eee;
+            padding: 1em;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1em;
+        }
+
+        label {
+            margin-bottom: 0.5em;
+        }
+
+        input, select, button {
+            padding: 0.5em;
+            margin-bottom: 0.5em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+
+        th, td {
+            padding: 0.5em;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sports Session Management</h1>
+        <div>
+            <button onclick="location.href='/login'" type="button">Logout</button>
+            <button onclick="location.href='/changepassword'" type="button">Change Password</button>
+        </div>
+    </header>
+    <main>
+        <section id="join-session">
+            <h2>Join Existing Session</h2>
+            <form id="join-form" method="post" action="/playerdash">
+                <label for="session-id">Session ID:</label>
+                <input type="text" id="session-id" name="session-id" required>
+                <button type="submit">Join Session</button>
+            </form>
+            <table id="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>Sport</th>
+                        <th>Teams</th>
+                        <th>Date</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% sessions.forEach(session => { %>
+                        <tr>
+                            <td><%= session.id %></td>
+                            <td><%= session.sport %></td>
+                            <td><%= session.teams %></td>
+                            <td><%= session.date %></td>
+                            <td><%= session.venue %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+        <section id="manage-sessions">
+            <h2>Manage Sessions</h2>
+            <form id="create-form">
+                <label for="sport-id">Sport:</label>
+                <select id="sport-id" name="sport-id">
+                    <% sports.forEach(sport => { %>
+                        <option value="<%= sport.id %>"><%= sport.name %></option>
+                    <% }); %>
+                </select>
+                <label for="team1">Team 1:</label>
+                <input type="text" id="team1" name="team1" required>
+                <label for="team2">Team 2:</label>
+                <input type="text" id="team2" name="team2" required>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                <label for="venue">Venue:</label>
+                <input type="text" id="venue" name="venue" required>
+                <button type="submit">Add Session</button>
+            </form>
+            
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const joinForm = document.getElementById('join-form');
+            const createForm = document.getElementById('create-form');
+            const sessionsTableBody = document.getElementById('sessions-table').querySelector('tbody');
+
+            // Display sessions in table
+            function renderSessions(sessions) {
+                sessionsTableBody.innerHTML = '';
+                sessions.forEach(session => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${session.id}</td>
+                        <td>${session.sport}</td>
+                        <td>${session.teams}</td>
+                        <td>${session.date}</td>
+                        <td>${session.venue}</td>
+                    `;
+                    sessionsTableBody.appendChild(row);
+                });
+            }
+
+            // Fetch initial sessions
+            fetch('/playerdash')
+                .then(response => response.json())
+                .then(data => {
+                    renderSessions(data.sessions);
+                });
+
+            // Handle join form submission
+            joinForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const sessionId = document.getElementById('session-id').value.trim();
+
+                fetch('/join-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ session_id: sessionId })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Successfully joined session ${sessionId}`);
+                    } else {
+                        console.error('Failed to join session');
+                    }
+                });
+            });
+
+            // Handle create form submission
+            createForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const sportId = document.getElementById('sport-id').value;
+                const team1 = document.getElementById('team1').value.trim();
+                const team2 = document.getElementById('team2').value.trim();
+                const date = document.getElementById('date').value;
+                const venue = document.getElementById('venue').value.trim();
+
+                fetch('/create-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sport_id: sportId, team1, team2, date, venue })
+                })
+                .then(response => response.json())
+                .then(newSession => {
+                    sessionsTableBody.insertAdjacentHTML('beforeend', `
+                        <tr>
+                            <td>${newSession.id}</td>
+                            <td>${newSession.sport}</td>
+                            <td>${newSession.teams}</td>
+                            <td>${newSession.date}</td>
+                            <td>${newSession.venue}</td>
+                        </tr>
+                    `);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

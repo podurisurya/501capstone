@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f2f2f2;
+        }
+
+        header {
+            background-color:rgb(6, 6, 64);
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        main {
+            padding: 2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="/reports">
+    <header>
+        <h1>Reports</h1>
+        <a href="/" style="color: #fff;">Back to Dashboard</a>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Game ID</th>
+                    <th>Sport</th>
+                    <th>Date</th>
+                    <th>Teams</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% reports.forEach(report => { %>
+                    <tr>
+                        <td><%= report.gameId %></td>
+                        <td><%= report.sport %></td>
+                        <td><%= report.date %></td>
+                        <td><%= report.teams %></td>
+                        <td><%= report.score %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </main>
+</form>
+</body>
+</html>

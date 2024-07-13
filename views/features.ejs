@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, orange, rgb(113, 113, 228));
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1000px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .item {
+            background-color: #e7e7e7;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            flex: 1 1 300px; /* Flex-grow, flex-shrink, flex-basis */
+            max-width: 300px;
+        }
+        .item h1 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .item p {
+            font-size: 16px;
+            color: #555;
+        }
+        .diagonalimg{
+            width: 100%;
+            height: 100vh;
+            background-image: linear-gradient(to top left, rgb(6,6,64) 50%, white 50%);
+            padding-left: 500px;
+            padding-top: 300px;
+            
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="/features">
+        
+    <div class="container">
+        <div class="item">
+            <h1>Games</h1>
+            <p>The admin can create games, and the games are available for players to play.</p>
+        </div>
+        <div class="item">
+            <h1>Create Sessions</h1>
+            <p>Anyone who wants to create a session can create it.</p>
+        </div>
+        <div class="item">
+            <h1>Join Sessions</h1>
+            <p>The admin has the right to create and delete sessions.</p>
+        </div>
+        <div class="item">
+            <h1>Change Of Password</h1>
+            <p>Users can change their password if they want.</p>
+        </div>
+        <div class="item">
+            <h1>User Integrity</h1>
+            <p>We save user details and passwords in an encrypted way.</p>
+        </div>
+        <div class="item">
+            <h1>Match Schedules</h1>
+            <p>Never miss a game with our comprehensive schedules.</p>
+        </div>
+    </div>
+</form>
+</body>
+</html>
